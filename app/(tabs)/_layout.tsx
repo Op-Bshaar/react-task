@@ -1,37 +1,64 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { Tabs } from "expo-router";
+import {
+  FontAwesome,
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
+import CartTabIcon from "@/components/Badge";
+const Layout = () => {
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
+    <Tabs>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="compass" size={30} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="Category"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="space-dashboard" size={30} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="Cart"
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color }) => <CartTabIcon color={color} />,
+        }}
+      />
+
+      <Tabs.Screen
+        name="Favorite"
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="heart" size={30} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="Profile"
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="user" size={30} color={color} />
           ),
         }}
       />
     </Tabs>
   );
-}
+};
+
+export default Layout;
+
+const styles = StyleSheet.create({});

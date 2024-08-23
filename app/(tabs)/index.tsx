@@ -1,70 +1,135 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  SafeAreaView,
+} from "react-native";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { Itemdata } from "@/constants/CategoriesItem";
+import { productItem } from "@/types/carttypes";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+const Home = () => {
+  const router = useRouter();
+  const [productItems, setProductItems] = useState<productItem[]>([]);
 
-export default function HomeScreen() {
+  const getProductItems = async () => {
+    try {
+      const response = await fetch("https://fakestoreapi.com/products");
+      const data: productItem[] = await response.json();
+      setProductItems(data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
+  useEffect(() => {
+    getProductItems();
+  }, []);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
-}
+    <SafeAreaView className="flex-1 bg-white p-4">
+      <View className="mt-5">
+        <View className="flex-row justify-between items-center">
+          <Ionicons name="home" size={30} color="green" />
+          <Ionicons name="notifications" size={30} color="green" />
+        </View>
+      </View>
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
+      <View className="mt-4">
+        <View className="flex-row items-center bg-gray-300 rounded-lg p-2">
+          <Ionicons name="search" size={20} color="#000" />
+          <TextInput
+            placeholder="Search the entire shop"
+            className="ml-2 flex-1 p-1 bg-gray-300 text-center text-black"
+          />
+        </View>
+        <View className="mt-2 flex-row items-center bg-blue-500 rounded-lg p-2">
+          <Ionicons name="fast-food" size={20} color="#000"  />
+          <TextInput
+            placeholder="Delivery is 50% cheaper"
+            className="ml-2 flex-1 p-1 text-white"
+          />
+        </View>
+      </View>
+
+      <View className="mt-4 bg-slate-500 rounded-xl p-4">
+        <View className="flex-row justify-between items-center">
+          <Text className="text-lg font-bold  text-midnight">Categories</Text>
+          <Text className="text-tahiti">See all</Text>
+        </View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="mt-2"
+        >
+          {Itemdata.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              className="items-center mr-4"
+              onPress={() => {}}
+            >
+              <MaterialCommunityIcons
+                name={item.iconName as any}
+                size={30}
+                color={"white"}
+                className="mb-2"
+              />
+              <Text className="text-xs text-center">{item.title}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+
+      <View className="mt-4 bg-slate-500 rounded-xl p-5">
+        <View className="flex-row justify-between items-center">
+          <Text className="text-lg font-bold text-midnight">Flash Sale</Text>
+          <Text className="text-gray-400">123</Text>
+          <Text className="text-tahiti">See all</Text>
+        </View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="mt-2"
+        >
+          <View className="flex-row">
+            {productItems.map((item) => (
+              <TouchableOpacity
+                key={item.id}
+                className="w-40 h-64 p-2 relative mt-4"
+                onPress={() =>
+                  router.push({
+                    pathname: "../pages/[id]",
+                    params: { id: item.id },
+                  })
+                }
+                
+              >
+                <Image
+                  source={{ uri: item.image }}
+                  className=" relative w-full h-1/2 bg-gray-300"
+                  resizeMode="contain"
+                />
+                <View className="absolute top-0 right-0">
+                  <Ionicons name="heart" size={20} color="white" />
+                </View>
+
+                <Text className="mt-2 font-bold text-center text-bubble-gum">{item.title}</Text>
+                <Text className="mt-1 text-bermuda text-center">
+                  ${item.price}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
+    </SafeAreaView>
+
+  );
+};
+
+export default Home;
