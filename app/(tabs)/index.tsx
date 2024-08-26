@@ -12,25 +12,16 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Itemdata } from "@/constants/CategoriesItem";
 import { productItem } from "@/types/carttypes";
-
+import { MockProductData } from "../mockdata/mock";
 const Home = () => {
   const router = useRouter();
+
   const [productItems, setProductItems] = useState<productItem[]>([]);
 
-  const getProductItems = async () => {
-    try {
-      const response = await fetch("https://fakestoreapi.com/products");
-      const data: productItem[] = await response.json();
-      setProductItems(data);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
-
   useEffect(() => {
-    getProductItems();
+    // mock data
+    setProductItems(MockProductData);
   }, []);
-
   return (
     <SafeAreaView className="flex-1 bg-white p-4">
       <View className="mt-5">
@@ -49,7 +40,7 @@ const Home = () => {
           />
         </View>
         <View className="mt-2 flex-row items-center bg-blue-500 rounded-lg p-2">
-          <Ionicons name="fast-food" size={20} color="#000"  />
+          <Ionicons name="fast-food" size={20} color="#000" />
           <TextInput
             placeholder="Delivery is 50% cheaper"
             className="ml-2 flex-1 p-1 text-white"
@@ -107,7 +98,6 @@ const Home = () => {
                     params: { id: item.id },
                   })
                 }
-                
               >
                 <Image
                   source={{ uri: item.image }}
@@ -117,8 +107,9 @@ const Home = () => {
                 <View className="absolute top-0 right-0">
                   <Ionicons name="heart" size={20} color="white" />
                 </View>
-
-                <Text className="mt-2 font-bold text-center text-bubble-gum">{item.title}</Text>
+                <Text className="mt-2 font-bold text-center text-bubble-gum">
+                  {item.title}
+                </Text>
                 <Text className="mt-1 text-bermuda text-center">
                   ${item.price}
                 </Text>
@@ -128,7 +119,6 @@ const Home = () => {
         </ScrollView>
       </View>
     </SafeAreaView>
-
   );
 };
 

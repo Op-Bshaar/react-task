@@ -1,24 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useCart } from "../context/cartcontext";
 import CustomButton from "@/components/CustomButton";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { MockProductData } from "../mockdata/mock";
 const Cartitem = () => {
   const { id } = useLocalSearchParams();
   const [productItem, setProductItem] = useState<any>(null);
-  const { addItemtoCart } = useCart();
-  const [showmore, setshowmore] = useState(false);
+  const { addItemtoCart } = useCart(); 
+  const [showMore, setShowMore] = useState(false);
 
-  const getProductItem = async () => {
-    try {
-      const response = await fetch(`https://fakestoreapi.com/products/${id}`);
-      const data = await response.json();
-      setProductItem(data);
-    } catch (error) {
-      console.error("Error fetching product:", error);
-    }
+  const getProductItem = () => {
+    const product = MockProductData.find((item) => item.id === id);
+    setProductItem(product || null);
   };
 
   useEffect(() => {
@@ -54,16 +49,14 @@ const Cartitem = () => {
             ${productItem.price}
           </Text>
           <Text className="mt-2 text-center">{productItem.category}</Text>
-          <Text className=" mt-4 text-centertext-tahiti">
-            {showmore
+          <Text className="mt-4 text-center text-tahiti">
+            {showMore
               ? productItem.description
               : productItem.description?.slice(0, 90) + "....."}
             <TouchableOpacity
-              onPress={() => {
-                setshowmore(!showmore);
-              }}
+              onPress={() => setShowMore(!showMore)}
             >
-              <Text className="text-lg  text-midnight">{showmore?'Show less':'Show more'}</Text>
+              <Text className="text-lg text-midnight">{showMore ? 'Show less' : 'Show more'}</Text>
             </TouchableOpacity>
           </Text>
 

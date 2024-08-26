@@ -1,13 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
 import { useCart } from "../context/cartcontext";
 import CustomButton from "@/components/CustomButton";
-import { useRouter } from "expo-router";
+
+import { MockProductData } from "../mockdata/mock";
 
 const Cart = () => {
   const { cartItems, totalAmount, updateItemInCart } = useCart();
-  const router = useRouter();
   const [productDetails, setProductDetails] = useState<any>({});
+
+  useEffect(() => {
+    const detailsMap = MockProductData.reduce((acc: any, product: any) => {
+      acc[product.id] = product;
+      return acc;
+    }, {});
+    setProductDetails(detailsMap);
+  }, []);
 
   const handleIncrease = (productId: string, quantity: number) => {
     updateItemInCart(productId, quantity + 1);
@@ -19,33 +27,9 @@ const Cart = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchProductDetails = async () => {
-      try {
-        const ids = cartItems.map((item) => item.productId);
-        const details = await Promise.all(
-          ids.map((id) =>
-            fetch(`https://fakestoreapi.com/products/${id}`).then((res) =>
-              res.json()
-            )
-          )
-        );
-        const detailsMap = details.reduce((acc: any, product: any) => {
-          acc[product.id] = product;
-          return acc;
-        }, {});
-        setProductDetails(detailsMap);
-      } catch (error) {
-        console.error("Error fetching product details:", error);
-      }
-    };
-
-    fetchProductDetails();
-  }, [cartItems]);
-
   return (
     <View className="flex-1 p-4">
-      <Text className="text-3xl mb-4 mt-7" >Your Cart</Text>
+      <Text className="text-3xl mb-4 mt-7">Your Cart</Text>
 
       {cartItems.length > 0 ? (
         <FlatList
